@@ -1,11 +1,11 @@
-import { COMMA, ENTER }                                  from '@angular/cdk/keycodes';
-import { Component, ElementRef, Input, ViewChild }       from '@angular/core';
-import { FormControl }                                   from '@angular/forms';
-import { MatAutocomplete, MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
-import { MatChipInputEvent }                             from '@angular/material/chips';
-import { Observable }                                    from 'rxjs';
-import { map, startWith }                                from 'rxjs/operators';
-import { NgxuxAutocompleteItem }                         from './ngxux-autocomplete-item';
+import { COMMA, ENTER }                                    from '@angular/cdk/keycodes';
+import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
+import { FormControl }                                     from '@angular/forms';
+import { MatAutocomplete, MatAutocompleteSelectedEvent }   from '@angular/material/autocomplete';
+import { MatChipInputEvent }                               from '@angular/material/chips';
+import { Observable }                                      from 'rxjs';
+import { map, startWith }                                  from 'rxjs/operators';
+import { NgxuxAutocompleteItem }                           from './ngxux-autocomplete-item';
 
 @Component({
 
@@ -57,7 +57,7 @@ import { NgxuxAutocompleteItem }                         from './ngxux-autocompl
     `,
     styleUrls: [ './ngxux-autocomplete.component.scss' ]
 })
-export class NgxuxAutocompleteComponent {
+export class NgxuxAutocompleteComponent implements OnInit {
 
     @Input() public items: Array<NgxuxAutocompleteItem>;
     @Input() public placeholder: string = 'Select..';
@@ -76,9 +76,13 @@ export class NgxuxAutocompleteComponent {
     // @ts-ignore
     @ViewChild('auto', { static: false }) public matAutocomplete: MatAutocomplete;
 
-    public constructor() {
+    public ngOnInit() {
 
-        this.filtered = this.control.valueChanges.pipe(startWith(null), map((item: NgxuxAutocompleteItem | null) => item ? this._filter(item) : this.items.slice()));
+        if (this.items && this.items.length > 0) {
+
+            this.filtered = this.control.valueChanges.pipe(startWith(null), map((item: NgxuxAutocompleteItem | null) => item ? this._filter(item) : this.items.slice()));
+
+        }
 
     }
 
@@ -96,21 +100,16 @@ export class NgxuxAutocompleteComponent {
 
             if (event.value.length > 0) {
 
-                console.log(event);
-
                 //
                 // Check to see if the manually typed in value already exists as a label.
                 //
                 const potentialItem = this.items.find(item => item.label == event.value);
-                console.log(potentialItem);
 
                 //
                 // If a matching label was found then we add that as the value otherwise
                 // we add a new NgxuxAutocompleteItem to the items array.
                 //
                 if (potentialItem) {
-
-                    console.log(this.selected.indexOf(potentialItem));
 
                     if (this.selected.indexOf(potentialItem) === -1) {
 
