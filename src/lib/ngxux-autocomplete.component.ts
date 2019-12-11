@@ -59,7 +59,7 @@ import { NgxuxAutocompleteItem }                         from './ngxux-autocompl
 })
 export class NgxuxAutocompleteComponent {
 
-    @Input() public items: Array<NgxuxAutocompleteItem> = [ { label: 'a' }, { label: 'b' } ];
+    @Input() public items: Array<NgxuxAutocompleteItem>;
     @Input() public placeholder: string = 'Select..';
 
     public selected: Array<NgxuxAutocompleteItem> = [];
@@ -78,11 +78,15 @@ export class NgxuxAutocompleteComponent {
 
     public constructor() {
 
-        // this.filtered = this.control.valueChanges.pipe(startWith(null), map((fruit: string | null) => fruit ? this._filter(fruit) : this.items.slice()));
         this.filtered = this.control.valueChanges.pipe(startWith(null), map((item: NgxuxAutocompleteItem | null) => item ? this._filter(item) : this.items.slice()));
 
     }
 
+    /**
+     * Adds a manually typed input value.
+     *
+     * @param {MatChipInputEvent} event
+     */
     public add(event: MatChipInputEvent): void {
 
         //
